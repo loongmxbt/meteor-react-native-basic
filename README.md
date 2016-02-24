@@ -3,6 +3,10 @@
 ## 说明
 实现了React Native -> Meteor 的 Posts 实时同步计数
 
+原文来自：[Differential Blog](http://blog.differential.com/easily-connect-react-native-to-a-meteor-server/)，修改了一系列bug。
+
+中文版：[Meteor开发指南 — 连接React Native到Meteor Server](http://www.jianshu.com/p/2af9b6a5523b)
+
 ## 常见问题
 
 1. babel
