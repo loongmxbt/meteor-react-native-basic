@@ -18,3 +18,5 @@ https://github.com/spencercarli/meteor-todos-react-native/blob/master/ReactNativ
 
 3. 操作 Meteor App，React Native App 没有实时更新
 可能与node-ddp包的observe有关，如何与React的组件生命周期联合使用，从而达到双向实时绑定呢？
+
+4. Render()中使用let的话会有作用域问题，导致{count}不显示，需要使用var

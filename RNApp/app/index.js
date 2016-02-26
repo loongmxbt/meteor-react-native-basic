@@ -17,72 +17,65 @@ export default React.createClass({
   getInitialState() {
     return {
       connected: false,
-      posts: {},
-      count: 0
+      posts: {}
     }
   },
 
   componentDidMount() {
     ddpClient.connect((err, wasReconnect) => {
       let connected = true;
-      if (err) connected = false;
-
+      if (err) {
+        connected = false;
+      } else {
+        this.makeSubscription();
+        this.observePosts();
+      }
       this.setState({ connected: connected });
-      this.makeSubscription();
-      // this.observePosts();
     });
   },
 
   makeSubscription() {
     ddpClient.subscribe("posts", [], () => {
       this.setState({posts: ddpClient.collections.posts});
-      this.getPostsCount();
     });
   },
 
-  // observePosts() {
-  //   let observer = ddpClient.observe("posts");
-  //   observer.added = (id) => {
-  //     this.setState({posts: ddpClient.collections.posts});
-  //     this.getPostsCount();
-  //   }
-  //   observer.changed = (id, oldFields, clearedFields, newFields) => {
-  //     this.setState({posts: ddpClient.collections.posts});
-  //     this.getPostsCount();
-  //   }
-  //   observer.removed = (id, oldValue) => {
-  //     this.setState({posts: ddpClient.collections.posts});
-  //     this.getPostsCount();
-  //   }
-  // },
+  observePosts() {
+    let observer = ddpClient.observe("posts");
+    observer.added = (id) => {
+      this.setState({posts: ddpClient.collections.posts});
+    }
+    observer.changed = (id, oldFields, clearedFields, newFields) => {
+      this.setState({posts: ddpClient.collections.posts});
+    }
+    observer.removed = (id, oldValue) => {
+      this.setState({posts: ddpClient.collections.posts});
+    }
+  },
 
   handleIncrement() {
     ddpClient.call('addPost', [], (err, result) => {
       console.log('called function, result: ' + result);
     }, () => {
-      this.getPostsCount();
+      this.setState({posts: ddpClient.collections.posts});
     });
-    
   },
 
   handleDecrement() {
     ddpClient.call('deletePost', [], (err, result) => {
       console.log('called function, result: ' + result);
     }, () => {
-      this.getPostsCount();
+      this.setState({posts: ddpClient.collections.posts});
     });
   },
 
-  getPostsCount() {
-    let items = this.state.posts.items || {};
-    this.setState({count: Object.keys(items).length});
-  },
-
   render() {
+    var items = this.state.posts.items || {};
+    var count = Object.keys(items).length;  
     return (
       <View style={styles.container}>
         <View style={styles.center}>
-          <Text>Posts: {this.state.count}</Text>
+          <Text>Posts: {count}</Text>
           <Button text="Increment" onPress={this.handleIncrement}/>
           <Button text="Decrement" onPress={this.handleDecrement}/>
         </View>
